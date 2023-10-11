@@ -2,6 +2,7 @@ package com.example.biometricauthentication;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.biometric.BiometricManager;
 import androidx.biometric.BiometricPrompt;
 import androidx.core.content.ContextCompat;
 
@@ -30,6 +31,19 @@ public class MainActivity extends AppCompatActivity {
         //Initialize executor for handling asynchronous tasks
         executor = ContextCompat.getMainExecutor(this);
 
+      //Check if device has biometric authentication or not
+        BiometricManager biometricManager =BiometricManager.from(this);
+        switch (biometricManager.canAuthenticate()){
+            case BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE:
+                tvAuthStatus.setText("No hardware");
+                break;
+            case BiometricManager.BIOMETRIC_ERROR_HW_UNAVAILABLE:
+                tvAuthStatus.setText("Hardware not present");
+                break;
+            case BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED:
+                tvAuthStatus.setText("No biometric enrolled");
+                break;
+        }
         // Create a BiometricPrompt instance with callbacks for authentication events
         biometricPrompt = new BiometricPrompt(MainActivity.this,executor,new BiometricPrompt.AuthenticationCallback(){
             @Override
